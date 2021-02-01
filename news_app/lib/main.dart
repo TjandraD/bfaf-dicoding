@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:news_app/detail_page.dart';
+import 'package:news_app/styles.dart';
 import 'package:news_app/webview_page.dart';
-import 'article.dart';
+import 'list_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,6 +16,23 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        primaryColor: primaryColor,
+        accentColor: secondaryColor,
+        scaffoldBackgroundColor: Colors.white,
+        textTheme: textTheme,
+        appBarTheme: AppBarTheme(
+          textTheme: textTheme.apply(bodyColor: Colors.black),
+          elevation: 0,
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: secondaryColor,
+          textTheme: ButtonTextTheme.primary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(0),
+            ),
+          ),
+        ),
       ),
       initialRoute: NewsListPage.routeName,
       routes: {
@@ -25,52 +43,6 @@ class MyApp extends StatelessWidget {
         ArticleWebView.routeName: (context) => ArticleWebView(
               url: ModalRoute.of(context).settings.arguments,
             ),
-      },
-    );
-  }
-}
-
-class NewsListPage extends StatelessWidget {
-  static const routeName = '/article_list';
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('News App'),
-      ),
-      body: FutureBuilder<String>(
-        future:
-            DefaultAssetBundle.of(context).loadString('assets/articles.json'),
-        builder: (context, snapshot) {
-          final List<Article> articles = parseArticles(snapshot.data);
-
-          return ListView.builder(
-            itemCount: articles.length,
-            itemBuilder: (context, index) {
-              return _buildArticleItem(context, articles[index]);
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildArticleItem(BuildContext context, Article article) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      leading: Image.network(
-        article.urlToImage,
-        width: 100,
-      ),
-      title: Text(article.title),
-      subtitle: Text(article.author),
-      onTap: () {
-        Navigator.pushNamed(
-          context,
-          ArticleDetailPage.routeName,
-          arguments: article,
-        );
       },
     );
   }
