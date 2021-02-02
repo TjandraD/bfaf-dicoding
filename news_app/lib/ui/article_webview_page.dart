@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'widgets/custom_scaffold.dart';
+import '../widgets/custom_scaffold.dart';
 
 class ArticleWebView extends StatelessWidget {
-  static const routeName = '/artile_web';
+  static const routeName = '/article_web';
 
   final String url;
 
