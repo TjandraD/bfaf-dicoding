@@ -1,4 +1,6 @@
+import 'package:bfaf_app/provider/done_module_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -7,13 +9,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return ChangeNotifierProvider(
+      create: (context) => DoneModuleProvider(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: ModulePage(),
       ),
-      home: ModulePage(),
     );
   }
 }
@@ -38,9 +43,7 @@ class _ModulePageState extends State<ModulePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DoneModuleList(
-                    doneModuleList: doneModuleList,
-                  ),
+                  builder: (context) => DoneModuleList(),
                 ),
               );
             },
@@ -82,13 +85,17 @@ class _ModuleListState extends State<ModuleList> {
     return ListView.builder(
       itemCount: moduleList.length,
       itemBuilder: (context, index) {
-        return ModuleTile(
-          moduleName: moduleList[index],
-          isDone: widget.doneModuleList.contains(moduleList[index]),
-          onClick: () {
-            setState(() {
-              widget.doneModuleList.add(moduleList[index]);
-            });
+        return Consumer<DoneModuleProvider>(
+          builder: (context, DoneModuleProvider data, widget) {
+            return ModuleTile(
+              moduleName: moduleList[index],
+              isDone: data.doneModuleList.contains(moduleList[index]),
+              onClick: () {
+                setState(() {
+                  data.complete(moduleList[index]);
+                });
+              },
+            );
           },
         );
       },
@@ -122,12 +129,11 @@ class ModuleTile extends StatelessWidget {
 }
 
 class DoneModuleList extends StatelessWidget {
-  final List<String> doneModuleList;
-
-  DoneModuleList({@required this.doneModuleList});
-
   @override
   Widget build(BuildContext context) {
+    final doneModuleList =
+        Provider.of<DoneModuleProvider>(context, listen: false).doneModuleList;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Done Module List'),
