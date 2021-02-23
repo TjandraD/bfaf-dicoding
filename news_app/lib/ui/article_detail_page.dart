@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/model/article.dart';
-import 'article_webview_page.dart';
+import 'article_web_view.dart';
 
 class ArticleDetailPage extends StatelessWidget {
   static const routeName = '/article_detail';
@@ -13,21 +13,29 @@ class ArticleDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(article.title),
+        title: Text('News App'),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(article.urlToImage),
+            article.urlToImage == null
+                ? Container(
+                    width: 200.0,
+                    child: Icon(Icons.error),
+                  )
+                : Hero(
+                    tag: article.urlToImage,
+                    child: Image.network(article.urlToImage),
+                  ),
             Padding(
               padding: EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(article.description),
+                  Text(article.description ?? ""),
                   Divider(color: Colors.grey),
                   Text(
-                    article.title,
+                    article.title ?? "",
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -40,7 +48,7 @@ class ArticleDetailPage extends StatelessWidget {
                   Text('Author: ${article.author}'),
                   Divider(color: Colors.grey),
                   Text(
-                    article.content,
+                    article.content ?? "",
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 10),

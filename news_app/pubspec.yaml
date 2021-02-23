@@ -9,14 +9,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.1
+  cupertino_icons: ^1.0.0
   google_fonts: ^1.1.2
+  http: ^0.12.2
   webview_flutter: ^1.0.7
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
-  integration_test:
     sdk: flutter
 
 flutter:
