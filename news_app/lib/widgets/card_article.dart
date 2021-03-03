@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/common/navigation.dart';
+import 'package:news_app/ui/article_detail_page.dart';
 import '../data/model/article.dart';
 import '../common/styles.dart';
 
@@ -26,7 +28,7 @@ class CardArticle extends StatelessWidget {
                 tag: article.urlToImage,
                 child: Image.network(article.urlToImage)),
         title: Text(article.title ?? ""),
-        onTap: onPressed,
+        onTap: () => Navigation.intentWithData(ArticleDetailPage.routeName, article),
       ),
     );
   }
