@@ -22,14 +22,22 @@ class NoteListPage extends StatelessWidget {
                 key: Key(note.id.toString()),
                 background: Container(color: Colors.red),
                 onDismissed: (direction) {
-                  // TODO : Kode untuk menghapus note
+                  provider.deleteNote(note.id);
                 },
                 child: Card(
                   child: ListTile(
                     title: Text(note.title),
                     subtitle: Text(note.description),
                     onTap: () async {
-                      // TODO : Kode untuk mendapatkan note yang dipilih dan dikirimkan ke NoteAddUpdatePage
+                      final selectedNote = await provider.getNoteById(note.id);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return NoteAddUpdatePage(selectedNote);
+                          },
+                        ),
+                      );
                     },
                   ),
                 ),

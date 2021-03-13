@@ -50,10 +50,29 @@ class _NoteAddUpdatePageState extends State<NoteAddUpdatePage> {
             ),
             SizedBox(
               width: double.infinity,
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Text('Simpan'),
                 onPressed: () async {
-                  // TODO : Tambahkan kode untuk menyimpan atau mengedit note
+                  if (!_isUpdate) {
+                    final note = Note(
+                      title: _titleController.text,
+                      description: _descriptionController.text,
+                    );
+
+                    Provider.of<DbProvider>(context, listen: false)
+                        .addNote(note);
+                  } else {
+                    final note = Note(
+                      id: widget.note.id,
+                      title: _titleController.text,
+                      description: _descriptionController.text,
+                    );
+
+                    Provider.of<DbProvider>(context, listen: false)
+                        .updateNote(note);
+                  }
+
+                  Navigator.pop(context);
                 },
               ),
             )
