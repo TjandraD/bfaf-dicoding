@@ -1,17 +1,13 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:news_app/data/api/api_service.dart';
-import 'package:news_app/provider/news_provider.dart';
-import 'package:news_app/provider/scheduling_provider.dart';
 import 'package:news_app/ui/settings_page.dart';
 import 'package:news_app/utils/background_service.dart';
 import 'package:news_app/utils/notification_helper.dart';
-import 'package:provider/provider.dart';
 import 'article_detail_page.dart';
 import 'article_list_page.dart';
 import '../widgets/platform_widget.dart';
+import 'bookmarks_page.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home_page';
@@ -27,20 +23,21 @@ class _HomePageState extends State<HomePage> {
   final BackgroundService _service = BackgroundService();
 
   List<Widget> _listWidget = [
-    ChangeNotifierProvider<NewsProvider>(
-      create: (_) => NewsProvider(apiService: ApiService()),
-      child: ArticleListPage(),
-    ),
-    ChangeNotifierProvider<SchedulingProvider>(
-      create: (_) => SchedulingProvider(),
-      child: SettingsPage(),
-    ),
+    ArticleListPage(),
+    BookmarksPage(),
+    SettingsPage(),
   ];
 
   List<BottomNavigationBarItem> _bottomNavBarItems = [
     BottomNavigationBarItem(
       icon: Icon(Platform.isIOS ? CupertinoIcons.news : Icons.public),
       label: _headlineText,
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Platform.isIOS
+          ? CupertinoIcons.bookmark
+          : Icons.collections_bookmark),
+      label: BookmarksPage.bookmarksTitle,
     ),
     BottomNavigationBarItem(
       icon: Icon(Platform.isIOS ? CupertinoIcons.settings : Icons.settings),

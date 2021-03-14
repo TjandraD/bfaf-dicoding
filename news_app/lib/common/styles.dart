@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 final Color primaryColor = Color(0xFFFFFFFF);
 final Color secondaryColor = Color(0xFF6B38FB);
+final Color darkPrimaryColor = Color(0xFF000000);
+final Color darkSecondaryColor = Color(0xff64ffda);
 
 final TextTheme textTheme = TextTheme(
   headline1: GoogleFonts.merriweather(
@@ -31,4 +33,54 @@ final TextTheme textTheme = TextTheme(
       fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
   overline: GoogleFonts.libreFranklin(
       fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
+);
+
+ThemeData lightTheme = ThemeData(
+  primarySwatch: Colors.blue,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  primaryColor: primaryColor,
+  accentColor: secondaryColor,
+  scaffoldBackgroundColor: Colors.white,
+  textTheme: textTheme,
+  appBarTheme: AppBarTheme(
+    textTheme: textTheme.apply(bodyColor: Colors.black),
+    elevation: 0,
+  ),
+  buttonTheme: ButtonThemeData(
+    buttonColor: secondaryColor,
+    textTheme: ButtonTextTheme.primary,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(0),
+      ),
+    ),
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    selectedItemColor: secondaryColor,
+    unselectedIconTheme: IconThemeData(color: Colors.grey),
+  ),
+);
+
+ThemeData darkTheme = ThemeData.dark().copyWith(
+  primaryColor: darkPrimaryColor,
+  accentColor: darkSecondaryColor,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  textTheme: textTheme,
+  appBarTheme: AppBarTheme(
+    textTheme: textTheme.apply(bodyColor: Colors.white),
+    elevation: 0,
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    selectedItemColor: darkSecondaryColor,
+    unselectedItemColor: Colors.grey,
+  ),
+  buttonTheme: ButtonThemeData(
+    buttonColor: darkSecondaryColor,
+    textTheme: ButtonTextTheme.primary,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(
+        Radius.circular(0),
+      ),
+    ),
+  ),
 );

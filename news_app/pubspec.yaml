@@ -17,6 +17,8 @@ dependencies:
   intl: ^0.16.1
   provider: ^4.3.3
   rxdart: ^0.25.0
+  shared_preferences: ^2.0.4
+  sqflite: ^2.0.0+2
   webview_flutter: ^1.0.7
 
 dev_dependencies:

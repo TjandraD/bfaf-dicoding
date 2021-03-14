@@ -1,13 +1,22 @@
 import 'dart:io';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:news_app/data/api/api_service.dart';
+import 'package:news_app/data/preferences/preferences_helper.dart';
+import 'package:news_app/provider/database_provider.dart';
+import 'package:news_app/provider/news_provider.dart';
+import 'package:news_app/provider/preferences_provider.dart';
+import 'package:news_app/provider/scheduling_provider.dart';
 import 'package:news_app/ui/article_detail_page.dart';
-import 'package:news_app/common/styles.dart';
 import 'package:news_app/ui/article_web_view.dart';
 import 'package:news_app/utils/background_service.dart';
 import 'package:news_app/utils/notification_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'common/navigation.dart';
+import 'data/db/database_helper.dart';
 import 'ui/home_page.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -32,44 +41,57 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'News App',
-      navigatorKey: navigatorKey,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        primaryColor: primaryColor,
-        accentColor: secondaryColor,
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: textTheme,
-        appBarTheme: AppBarTheme(
-          textTheme: textTheme.apply(bodyColor: Colors.black),
-          elevation: 0,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => NewsProvider(
+            apiService: ApiService(),
+          ),
         ),
-        buttonTheme: ButtonThemeData(
-          buttonColor: secondaryColor,
-          textTheme: ButtonTextTheme.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(0),
+        ChangeNotifierProvider(
+          create: (_) => SchedulingProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PreferencesProvider(
+            preferencesHelper: PreferencesHelper(
+              sharedPreferences: SharedPreferences.getInstance(),
             ),
           ),
         ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          selectedItemColor: secondaryColor,
-          unselectedIconTheme: IconThemeData(color: Colors.grey),
+        ChangeNotifierProvider(
+          create: (_) => DatabaseProvider(databaseHelper: DatabaseHelper()),
         ),
+      ],
+      child: Consumer<PreferencesProvider>(
+        builder: (context, provider, child) {
+          return MaterialApp(
+            title: 'News App',
+            theme: provider.themeData,
+            builder: (context, child) {
+              return CupertinoTheme(
+                data: CupertinoThemeData(
+                  brightness:
+                      provider.isDarkTheme ? Brightness.dark : Brightness.light,
+                ),
+                child: Material(
+                  child: child,
+                ),
+              );
+            },
+            navigatorKey: navigatorKey,
+            initialRoute: HomePage.routeName,
+            routes: {
+              HomePage.routeName: (context) => HomePage(),
+              ArticleDetailPage.routeName: (context) => ArticleDetailPage(
+                    article: ModalRoute.of(context).settings.arguments,
+                  ),
+              ArticleWebView.routeName: (context) => ArticleWebView(
+                    url: ModalRoute.of(context).settings.arguments,
+                  ),
+            },
+          );
+        },
       ),
-      initialRoute: HomePage.routeName,
-      routes: {
-        HomePage.routeName: (context) => HomePage(),
-        ArticleDetailPage.routeName: (context) => ArticleDetailPage(
-              article: ModalRoute.of(context).settings.arguments,
-            ),
-        ArticleWebView.routeName: (context) => ArticleWebView(
-              url: ModalRoute.of(context).settings.arguments,
-            ),
-      },
     );
   }
 }
