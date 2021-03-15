@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatefulWidget {
   static const String id = 'register_page';
@@ -11,6 +12,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
 
   bool _obscureText = true;
   bool _isLoading = false;
@@ -76,9 +78,31 @@ class _RegisterPageState extends State<RegisterPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              onPressed: () {},
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                });
+                try {
+                  final email = _emailController.text;
+                  final password = _passwordController.text;
+
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: email, password: password);
+
+                  if (newUser != null) {
+                    Navigator.pop(context);
+                  }
+                } catch (e) {
+                  final snackbar = SnackBar(content: Text(e.toString()));
+                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                } finally {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                }
+              },
             ),
-            FlatButton(
+            TextButton(
               child: Text('Already have an account? Login'),
               onPressed: () => Navigator.pop(context),
             ),

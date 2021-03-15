@@ -1,6 +1,7 @@
 import 'package:dicoding_chatting/pages/chat_page.dart';
 import 'package:dicoding_chatting/pages/register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   static const String id = 'login_page';
@@ -13,6 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
 
   bool _obscureText = true;
   bool _isLoading = false;
@@ -73,10 +75,31 @@ class _LoginPageState extends State<LoginPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, ChatPage.id),
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                });
+                try {
+                  final email = _emailController.text;
+                  final password = _passwordController.text;
+
+                  final user = await _auth.signInWithEmailAndPassword(
+                      email: email, password: password);
+
+                  if (user != null) {
+                    Navigator.pushReplacementNamed(context, ChatPage.id);
+                  }
+                } catch (e) {
+                  final snackbar = SnackBar(content: Text(e.toString()));
+                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                } finally {
+                  setState(() {
+                    _isLoading = false;
+                  });
+                }
+              },
             ),
-            FlatButton(
+            TextButton(
               child: Text('Does not have an account yet? Register here'),
               onPressed: () => Navigator.pushNamed(context, RegisterPage.id),
             ),
