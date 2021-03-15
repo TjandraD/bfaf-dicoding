@@ -38,6 +38,7 @@ class _ModulePageState extends State<ModulePage> {
         title: Text('Memulai Pemrograman Dengan Dart'),
         actions: [
           IconButton(
+            key: Key('done_page_button'),
             icon: Icon(Icons.done),
             onPressed: () {
               Navigator.push(
@@ -121,6 +122,7 @@ class ModuleTile extends StatelessWidget {
       trailing: isDone
           ? Icon(Icons.done)
           : ElevatedButton(
+              key: Key('$moduleName'),
               child: Text('Done'),
               onPressed: onClick,
             ),
